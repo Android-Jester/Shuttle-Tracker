@@ -1,0 +1,18 @@
+{
+    "brunaiLocationA": {
+        "latitude": "",
+        "longitude": ""
+    },
+    "brunaiLocationB": {
+        "latitude": "",
+        "longitude": ""
+    },
+    "CommericalLocationA": {
+        "latitude": "",
+        "longitude": ""
+    },
+    "CommericalLocationB": {
+        "latitude": "",
+        "longitude": ""
+    }
+}
