@@ -3,35 +3,42 @@ package com.printf.shuttle_tracker.View.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.location.Location;
+import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import com.google.android.gms.maps.MapView;
+import com.printf.shuttle_tracker.Model.Map.data.FirebaseDataBase;
+import com.printf.shuttle_tracker.Model.Map.data.Location;
 import com.printf.shuttle_tracker.R;
+
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MapsActivity extends AppCompatActivity {
 
-
-//    FirebaseDatabase database = FirebaseDatabase.getInstance();
-//    DatabaseReference brunaiBusLocation1 = database.getReference("location1");
-//    DatabaseReference brunaiBusLocation2 = database.getReference("location2");
-//    DatabaseReference brunaiBusLocation3 = database.getReference("location3");
-
-//    Map<String, String> brunaiLocations() {
-//
-//    }
-
-//    Map<String, String> brunaiLocations();
-
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+    private FirebaseDataBase CommericallocationA = new FirebaseDataBase("CommericallocationA");
+    private FirebaseDataBase CommericallocationB = new FirebaseDataBase("CommericallocationB");
+    private FirebaseDataBase BrunailocationA = new FirebaseDataBase("BrunailocationA");
+    private FirebaseDataBase BrunailocationB = new FirebaseDataBase("BrunailocationB");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +47,75 @@ public class MapsActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
-        //setting up the mapview
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.getController().setZoom(18.0);
         map.setMultiTouchControls(true);
+
+
+        CommericallocationA.getLocation(new FirebaseDataBase.DataStatus() {
+            @Override
+            public void DataIsLoaded(Location location, List<String> keys) {
+                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                Marker startMaker = new Marker(map);
+                startMaker.setPosition(point);
+                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                map.getOverlays().add(startMaker);
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+        });
+        CommericallocationB.getLocation(new FirebaseDataBase.DataStatus() {
+            @Override
+            public void DataIsLoaded(Location location, List<String> keys) {
+                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                Marker startMaker = new Marker(map);
+                startMaker.setPosition(point);
+                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                map.getOverlays().add(startMaker);
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+        });
+        BrunailocationA.getLocation(new FirebaseDataBase.DataStatus() {
+            @Override
+            public void DataIsLoaded(Location location, List<String> keys) {
+                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                Marker startMaker = new Marker(map);
+                startMaker.setPosition(point);
+                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                map.getOverlays().add(startMaker);
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+        });
+        BrunailocationB.getLocation(new FirebaseDataBase.DataStatus() {
+            @Override
+            public void DataIsLoaded(Location location, List<String> keys) {
+                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                Marker startMaker = new Marker(map);
+                startMaker.setPosition(point);
+                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                map.getOverlays().add(startMaker);
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+        });
+
+        //setting up the mapview
+
 
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION
@@ -55,14 +126,6 @@ public class MapsActivity extends AppCompatActivity {
         CompassOverlay compassOverlay = new CompassOverlay(this, map);
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
-
-        GeoPoint point = new GeoPoint(6.66914, -1.5627878);
-
-        Marker startMaker = new Marker(map);
-        startMaker.setPosition(point);
-        startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-        map.getOverlays().add(startMaker);
-        map.getController().setCenter(point);
 
     }
 
@@ -119,62 +182,4 @@ public class MapsActivity extends AppCompatActivity {
 }
 
 
-//        brunaiBusLocation1.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String  = dataSnapshot.getValue(String.class);
-//                Log.d(TAG, "Value is: " + value);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w(TAG, "Failed to read first Location.", error.toException());
-//            }
-//        });
-//        brunaiBusLocation2.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String geolocation1 = dataSnapshot.getValue(String.class);
-//                Log.d(TAG, "Value is: " + value);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w(TAG, "Failed to read first Location.", error.toException());
-//            }
-//        });
-//        brunaiBusLocation3.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String geolocation1 = dataSnapshot.getValue(String.class);
-//                Log.d(TAG, "Value is: " + value);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w(TAG, "Failed to read first Location.", error.toException());
-//            }
-//        });
 
-    }
-
-//    @Override
-//    public void onLocationChanged(@NonNull Location location) {
-////        brunaiBusLocation1.updateChildren();
-////        brunaiBusLocation2.updateChildren();
-////        brunaiBusLocation3.updateChildren();
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//
-//
-//
-//    }
-}
-            }

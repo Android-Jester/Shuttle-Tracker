@@ -2,12 +2,6 @@ package com.printf.shuttle_tracker.View.Login;
 
 import android.app.Activity;
 
-import com.printf.shuttle_tracker.View.Login.LoggedInUserView;
-import com.printf.shuttle_tracker.View.Login.LoginFormState;
-import com.printf.shuttle_tracker.View.Login.LoginResult;
-import com.printf.shuttle_tracker.View.Login.LoginViewModel;
-import com.printf.shuttle_tracker.Model.Login_Model.data.model.*;
-
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
