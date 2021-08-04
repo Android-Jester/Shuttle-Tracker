@@ -15,7 +15,6 @@ import java.util.Timer;
 public class FirebaseDataBase {
     final private FirebaseDatabase mDatabase;
     final private DatabaseReference mreferenceLocations;
-//    private List<Location> locations = new ArrayList<>();
     Location location;
 
 

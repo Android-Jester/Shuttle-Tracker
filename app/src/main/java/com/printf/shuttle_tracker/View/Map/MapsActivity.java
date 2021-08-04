@@ -35,10 +35,10 @@ public class MapsActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
-    private FirebaseDataBase CommericallocationA = new FirebaseDataBase("CommericallocationA");
-    private FirebaseDataBase CommericallocationB = new FirebaseDataBase("CommericallocationB");
-    private FirebaseDataBase BrunailocationA = new FirebaseDataBase("BrunailocationA");
-    private FirebaseDataBase BrunailocationB = new FirebaseDataBase("BrunailocationB");
+    private FirebaseDataBase CommericallocationA = new FirebaseDataBase("CommericalLocationA");
+    private FirebaseDataBase CommericallocationB = new FirebaseDataBase("CommericalLocationB");
+    private FirebaseDataBase BrunailocationA = new FirebaseDataBase("BrunaiLocationA");
+    private FirebaseDataBase BrunailocationB = new FirebaseDataBase("BrunaiLocationB");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,20 +47,31 @@ public class MapsActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
+        //setting up the mapview
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.getController().setZoom(18.0);
         map.setMultiTouchControls(true);
 
+        requestPermissionsIfNecessary(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION});
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
+        map.setMultiTouchControls(true);
+
+        CompassOverlay compassOverlay = new CompassOverlay(this, map);
+        compassOverlay.enableCompass();
+        map.getOverlays().add(compassOverlay);
 
         CommericallocationA.getLocation(new FirebaseDataBase.DataStatus() {
             @Override
             public void DataIsLoaded(Location location, List<String> keys) {
-                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                Marker startMaker = new Marker(map);
-                startMaker.setPosition(point);
-                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                map.getOverlays().add(startMaker);
+
+                if(location.isActive()) {
+                    GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    Marker startMaker = new Marker(map);
+                    startMaker.setPosition(point);
+                    startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                    map.getOverlays().add(startMaker);
+                }
             }
 
             @Override
@@ -71,11 +82,13 @@ public class MapsActivity extends AppCompatActivity {
         CommericallocationB.getLocation(new FirebaseDataBase.DataStatus() {
             @Override
             public void DataIsLoaded(Location location, List<String> keys) {
-                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                Marker startMaker = new Marker(map);
-                startMaker.setPosition(point);
-                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                map.getOverlays().add(startMaker);
+                if(location.isActive()) {
+                    GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    Marker startMaker = new Marker(map);
+                    startMaker.setPosition(point);
+                    startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                    map.getOverlays().add(startMaker);
+                }
             }
 
             @Override
@@ -86,11 +99,13 @@ public class MapsActivity extends AppCompatActivity {
         BrunailocationA.getLocation(new FirebaseDataBase.DataStatus() {
             @Override
             public void DataIsLoaded(Location location, List<String> keys) {
-                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                Marker startMaker = new Marker(map);
-                startMaker.setPosition(point);
-                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                map.getOverlays().add(startMaker);
+                if (location.isActive()) {
+                    GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    Marker startMaker = new Marker(map);
+                    startMaker.setPosition(point);
+                    startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                    map.getOverlays().add(startMaker);
+                }
             }
 
             @Override
@@ -101,11 +116,13 @@ public class MapsActivity extends AppCompatActivity {
         BrunailocationB.getLocation(new FirebaseDataBase.DataStatus() {
             @Override
             public void DataIsLoaded(Location location, List<String> keys) {
-                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                Marker startMaker = new Marker(map);
-                startMaker.setPosition(point);
-                startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                map.getOverlays().add(startMaker);
+                if (location.isActive()) {
+                    GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    Marker startMaker = new Marker(map);
+                    startMaker.setPosition(point);
+                    startMaker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                    map.getOverlays().add(startMaker);
+                }
             }
 
             @Override
@@ -114,18 +131,9 @@ public class MapsActivity extends AppCompatActivity {
             }
         });
 
-        //setting up the mapview
 
 
-        requestPermissionsIfNecessary(new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION
-        });
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
-        map.setMultiTouchControls(true);
 
-        CompassOverlay compassOverlay = new CompassOverlay(this, map);
-        compassOverlay.enableCompass();
-        map.getOverlays().add(compassOverlay);
 
     }
 
