@@ -1,123 +1,81 @@
 package com.printf.shuttle_tracker.View.Login;
 
-import android.app.Activity;
-
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import android.os.Bundle;
-import androidx.annotation.*;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.*;
-import android.view.*;
-import android.widget.*;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.printf.shuttle_tracker.R;
+import com.printf.shuttle_tracker.View.Map.MapsActivity;
+import com.printf.shuttle_tracker.View.SignUp.SignUpActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
-
-    private LoginViewModel loginViewModel;
+    private EditText email;
+    private EditText password;
+    private Button loginButton;
+    private TextView SignUpTextView;
+    private FirebaseAuth auth;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
 
-        ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        email = findViewById(R.id.SignInemailAddress);
+        password = findViewById(R.id.SignInpasswordAddress);
+        loginButton = findViewById(R.id.signInButton);
+        SignUpTextView = findViewById(R.id.SignUpTextView);
 
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
-                .get(LoginViewModel.class);
+        auth = FirebaseAuth.getInstance();
 
-        final EditText usernameEditText = binding.username;
-        final EditText passwordEditText = binding.password;
-        final Button loginButton = binding.login;
-        final ProgressBar loadingProgressBar = binding.loading;
+        //TODO: Initialize the widgets
 
-        loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
-            @Override
-            public void onChanged(@Nullable LoginFormState loginFormState) {
-                if (loginFormState == null) {
-                    return;
-                }
-                loginButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
-                }
-                if (loginFormState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                }
-            }
+        loginButton.setOnClickListener(v -> {
+            signInUser();
         });
 
-        loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
-            @Override
-            public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
-                loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
-                }
-                if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
-                }
-                setResult(Activity.RESULT_OK);
 
-                //Complete and destroy login activity once successful
-                finish();
-            }
+        SignUpTextView.setOnClickListener(v -> {
+            startActivity(new Intent(this, SignUpActivity.class));
         });
 
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
+    }
+    public void signInUser(){
+        String emailAddress = email.getText().toString();
+        String passwordAddress = password.getText().toString();
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
-        };
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
+        if (TextUtils.isEmpty(emailAddress)){
+            email.setError("Email Cannot be empty");
+            email.requestFocus();
+        } else if (TextUtils.isEmpty(passwordAddress)){
+            password.setError("Email Cannot be empty");
+            password.requestFocus();
+        } else {
+            auth.signInWithEmailAndPassword(emailAddress, passwordAddress).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()){
+                        Toast.makeText(LoginActivity.this, "SignUp successful", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+                    }
                 }
-                return false;
-            }
-        });
+            });
+        }
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
-        });
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }
 
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }
 }

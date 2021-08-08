@@ -3,11 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/layout/activity_maps.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.19583333333333333" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.228125" />
+        <entry key="app/src/main/res/drawable/buttons_panel.xml" value="0.3765" />
+        <entry key="app/src/main/res/drawable/dialog_background.xml" value="0.3765" />
+        <entry key="app/src/main/res/drawable/ic_left_arrow.xml" value="4.0" />
+        <entry key="app/src/main/res/drawable/ic_rectangle_3.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/left_arrow.xml" value="0.117" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.28222996515679444" />
+        <entry key="app/src/main/res/layout/activity_maps.xml" value="0.199438202247191" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/dialog_fragment.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/login_fragment.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/maps_fragment.xml" value="0.37604166666666666" />
       </map>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
