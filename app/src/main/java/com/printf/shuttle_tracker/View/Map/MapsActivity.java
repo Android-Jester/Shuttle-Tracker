@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
@@ -28,6 +29,7 @@ import com.printf.shuttle_tracker.View.Login.LoginActivity;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -49,6 +51,7 @@ public class MapsActivity extends AppCompatActivity {
 
     public Button isCommericalLocation;
     public Button isBrunaiLocation;
+    public TextView distanceText;
 
     private Button rightButton;
     private Button leftButton;
@@ -76,17 +79,32 @@ public class MapsActivity extends AppCompatActivity {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
         auth = FirebaseAuth.getInstance();
+
         //setting up the mapview
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.BASE_OVERLAY_NL);
         map.getController().setZoom(15.0);
         map.setMultiTouchControls(true);
-
-
-
+        map.canZoomIn();
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
         requestPermissionsIfNecessary(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION});
-        map.setMultiTouchControls(true);
+
+
+        //TODO:START LINES after fixing performance issues
+//        List<GeoPoint> geoPoints = new ArrayList<>();
+////add your points here
+//        Polyline line = new Polyline();   //see note below!
+//        line.setPoints(geoPoints);
+//        line.setOnClickListener(new Polyline.OnClickListener() {
+//        distanceText.setText(polyline.getPoints().size());
+//            @Override
+//            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
+//                Toast.makeText(mapView.getContext(), "polyline with " + polyline.getPoints().size() + "pts was tapped", Toast.LENGTH_LONG).show();
+//                return false;
+//            }
+//        });
+//        map.getOverlayManager().add(line);
 
         List<FirebaseDatabaseRetreiever> commericalLocation = new ArrayList<>();
         commericalLocation.add(new FirebaseDatabaseRetreiever("commericalLocationA"));
