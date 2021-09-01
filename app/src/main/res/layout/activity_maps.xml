@@ -12,10 +12,45 @@
         android:layout_height="fill_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintVertical_bias="1.0" >
 
+
+    </org.osmdroid.views.MapView>
+
+<!--    <ImageView-->
+<!--        android:id="@+id/leftButton"-->
+<!--        android:layout_width="90dp"-->
+<!--        android:layout_height="87dp"-->
+<!--        android:layout_marginEnd="250dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/map"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        tools:srcCompat="@tools:sample/avatars" />-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/rightButton"-->
+<!--        android:layout_width="90dp"-->
+<!--        android:layout_height="87dp"-->
+<!--        android:layout_marginStart="160dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/map"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@id/leftButton"-->
+<!--        tools:srcCompat="@tools:sample/avatars" />-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/distanceTextLayout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/leftButton"-->
+<!--        app:layout_constraintStart_toStartOf="@id/map"-->
+
+<!--        >-->
+
+<!--    </LinearLayout>-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

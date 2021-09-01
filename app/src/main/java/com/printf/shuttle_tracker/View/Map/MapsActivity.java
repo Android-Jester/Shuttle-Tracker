@@ -15,12 +15,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.j256.ormlite.stmt.query.In;
 import com.printf.shuttle_tracker.Model.Map.data.FirebaseDatabaseRetreiever;
 import com.printf.shuttle_tracker.Model.Map.data.Location;
 import com.printf.shuttle_tracker.R;
@@ -33,6 +35,7 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -46,15 +49,15 @@ import java.util.Map;
 public class MapsActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private MapView map = null;
-    private boolean isCom;
+    private MapView map;
+//    private boolean isCom;
 
-    public Button isCommericalLocation;
-    public Button isBrunaiLocation;
-    public TextView distanceText;
-
-    private Button rightButton;
-    private Button leftButton;
+//    public Button isCommericalLocation;
+//    public Button isBrunaiLocation;
+//    public TextView distanceText;
+//
+//    private Button rightButton;
+//    private Button leftButton;
     public int index = 0;
 
 
@@ -66,6 +69,8 @@ public class MapsActivity extends AppCompatActivity {
 
         map.getOverlays().clear();
         map.getOverlays().add(startMarker);
+        map.getController().setCenter(point);
+        map.getController().setZoom(20.0);
         return startMarker;
     }
 
@@ -82,161 +87,182 @@ public class MapsActivity extends AppCompatActivity {
 
         //setting up the mapview
         map = findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.BASE_OVERLAY_NL);
+        map.setTileSource(TileSourceFactory.MAPNIK);
         map.getController().setZoom(15.0);
         map.setMultiTouchControls(true);
         map.canZoomIn();
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
+        List<GeoPoint> geoPoints = new ArrayList<>();
+
         requestPermissionsIfNecessary(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION});
 
 
+        FirebaseDatabaseRetreiever retreiever = new FirebaseDatabaseRetreiever("commericalLocationA");
+
+        retreiever.getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
+            @Override
+            public void DataIsLoaded(Location location) {
+                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+                            makeMarker(startPoint);
+
+                Intent intent = new Intent(getApplicationContext(), LocationServices.class);
+                        double longitude = intent.getDoubleExtra("longitude", 0.0);
+                        double latitude = intent.getDoubleExtra("latitude", 0.0);
+                GeoPoint userGeo = new GeoPoint(latitude, longitude);
+
+                geoPoints.add(startPoint);
+                geoPoints.add(userGeo);
+
+
+//
+            }
+        });
+
         //TODO:START LINES after fixing performance issues
-//        List<GeoPoint> geoPoints = new ArrayList<>();
 ////add your points here
-//        Polyline line = new Polyline();   //see note below!
-//        line.setPoints(geoPoints);
-//        line.setOnClickListener(new Polyline.OnClickListener() {
-//        distanceText.setText(polyline.getPoints().size());
-//            @Override
-//            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
-//                Toast.makeText(mapView.getContext(), "polyline with " + polyline.getPoints().size() + "pts was tapped", Toast.LENGTH_LONG).show();
-//                return false;
+        Polyline line = new Polyline();   //see note below!
+        line.setPoints(geoPoints);
+        line.setOnClickListener(new Polyline.OnClickListener() {
+            @Override
+            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
+                Toast.makeText(mapView.getContext(), "polyline with " + polyline.getPoints().size() + "pts was tapped", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        map.getOverlayManager().add(line);
+
+//        List<FirebaseDatabaseRetreiever> commericalLocation = new ArrayList<>();
+//        commericalLocation.add(new FirebaseDatabaseRetreiever("commericalLocationA"));
+//        commericalLocation.add(new FirebaseDatabaseRetreiever("commericalLocationB"));
+//
+//        List<FirebaseDatabaseRetreiever> brunaiLocation = new ArrayList<>();
+//        brunaiLocation.add(new FirebaseDatabaseRetreiever("brunaiLocationA"));
+//        brunaiLocation.add(new FirebaseDatabaseRetreiever("brunaiLocationB"));
+//
+//
+//        isCommericalLocation.setOnClickListener(v->{
+//            isCom = true;
+//        });
+//
+//        isBrunaiLocation.setOnClickListener(v->{
+//            isCom = false;
+//        });
+//
+//
+//
+//        //Initializing the Database to retrieve the location from the database
+//        if(isCom) {
+//
+//            commericalLocation.get(0).getLocation(
+//                    location -> {
+//                        if (location.isActve()) {
+//                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                            makeMarker(startPoint);
+//                        }
+//                    }
+//            );
+//
+//            commericalLocation.get(1).getLocation(
+//                    location -> {
+//                        if (location.isActve()) {
+//                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                            makeMarker(startPoint);
+//                        }
+//                    }
+//            );
+//        } else {
+//
+//            brunaiLocation.get(0).getLocation(
+//                    location -> {
+//                        if (location.isActve()) {
+//                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                            makeMarker(startPoint);
+//                        }
+//                    }
+//            );
+//
+//            brunaiLocation.get(1).getLocation(
+//                    location -> {
+//                        if (location.isActve()) {
+//                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                            makeMarker(startPoint);
+//                        }
+//                    }
+//            );
+//        }
+//
+//
+//
+//
+//        leftButton.setOnClickListener(v -> {
+//
+//            if(isCom && commericalLocation.size() < 3) {
+//                commericalLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
+//                    @Override
+//                    public void DataIsLoaded(Location location) {
+//                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                        map.getController().setCenter(startPoint);
+//                    }
+//
+//
+//
+//                });
+//                if(index < 2){
+//                    index = 0;
+//                }
+//                index--;
+//            } else if (brunaiLocation.size() < 3) {
+//                brunaiLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
+//                    @Override
+//                    public void DataIsLoaded(Location location) {
+//                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                        map.getController().setCenter(startPoint);
+//                    }
+//
+//
+//
+//                });
+//                if(index < 0){
+//                    index = 0;
+//                }
+//                index--;
 //            }
 //        });
-//        map.getOverlayManager().add(line);
-
-        List<FirebaseDatabaseRetreiever> commericalLocation = new ArrayList<>();
-        commericalLocation.add(new FirebaseDatabaseRetreiever("commericalLocationA"));
-        commericalLocation.add(new FirebaseDatabaseRetreiever("commericalLocationB"));
-
-        List<FirebaseDatabaseRetreiever> brunaiLocation = new ArrayList<>();
-        brunaiLocation.add(new FirebaseDatabaseRetreiever("brunaiLocationA"));
-        brunaiLocation.add(new FirebaseDatabaseRetreiever("brunaiLocationB"));
-
-
-        isCommericalLocation.setOnClickListener(v->{
-            isCom = true;
-        });
-
-        isBrunaiLocation.setOnClickListener(v->{
-            isCom = false;
-        });
-
-
-
-        //Initializing the Database to retrieve the location from the database
-        if(isCom) {
-
-            commericalLocation.get(0).getLocation(
-                    location -> {
-                        if (location.isActve()) {
-                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                            makeMarker(startPoint);
-                        }
-                    }
-            );
-
-            commericalLocation.get(1).getLocation(
-                    location -> {
-                        if (location.isActve()) {
-                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                            makeMarker(startPoint);
-                        }
-                    }
-            );
-        } else {
-
-            brunaiLocation.get(0).getLocation(
-                    location -> {
-                        if (location.isActve()) {
-                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                            makeMarker(startPoint);
-                        }
-                    }
-            );
-
-            brunaiLocation.get(1).getLocation(
-                    location -> {
-                        if (location.isActve()) {
-                            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                            makeMarker(startPoint);
-                        }
-                    }
-            );
-        }
-
-
-
-
-        leftButton.setOnClickListener(v -> {
-
-            if(isCom && commericalLocation.size() < 3) {
-                commericalLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(Location location) {
-                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                        map.getController().setCenter(startPoint);
-                    }
-
-
-
-                });
-                if(index < 2){
-                    index = 0;
-                }
-                index--;
-            } else if (brunaiLocation.size() < 3) {
-                brunaiLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(Location location) {
-                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                        map.getController().setCenter(startPoint);
-                    }
-
-
-
-                });
-                if(index < 0){
-                    index = 0;
-                }
-                index--;
-            }
-        });
-        rightButton.setOnClickListener(v -> {
-
-            if(isCom && commericalLocation.size() < 3) {
-                commericalLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(Location location) {
-                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                        map.getController().setCenter(startPoint);
-                    }
-
-
-
-                });
-                if(index > 2){
-                    index = 0;
-                }
-                index++;
-            } else if (brunaiLocation.size() < 3) {
-                brunaiLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(Location location) {
-                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
-                        map.getController().setCenter(startPoint);
-                    }
-
-
-
-                });
-                if(index > 2){
-                    index = 0;
-                }
-                index++;
-            }
-        });
+//        rightButton.setOnClickListener(v -> {
+//
+//            if(isCom && commericalLocation.size() < 3) {
+//                commericalLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
+//                    @Override
+//                    public void DataIsLoaded(Location location) {
+//                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                        map.getController().setCenter(startPoint);
+//                    }
+//
+//
+//
+//                });
+//                if(index > 2){
+//                    index = 0;
+//                }
+//                index++;
+//            } else if (brunaiLocation.size() < 3) {
+//                brunaiLocation.get(index).getLocation(new FirebaseDatabaseRetreiever.DataStatus() {
+//                    @Override
+//                    public void DataIsLoaded(Location location) {
+//                        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude()); //Gets a geopoint of the location recieved
+//                        map.getController().setCenter(startPoint);
+//                    }
+//
+//
+//
+//                });
+//                if(index > 2){
+//                    index = 0;
+//                }
+//                index++;
+//            }
+//        });
 
 
 

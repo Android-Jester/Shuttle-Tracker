@@ -15,7 +15,6 @@ import java.util.Objects;
 
 public class FirebaseDatabaseRetreiever {
     final String pathName;
-    private boolean isActive;
     public FirebaseDatabase database;
     public DatabaseReference locationContainer;
     private Location location;
@@ -41,10 +40,9 @@ public class FirebaseDatabaseRetreiever {
                 Log.d("Firebase Database", "Database Collected");
                 Log.d("Firebase Database", "Latitude:: " + location.getLatitude());
                 Log.d("Firebase Database", "Longitude:: " + location.getLongitude());
-                Log.d("Firebase Database", "isActive:: " + location.isActve());
+                Log.d("Firebase Database", "isActive:: " + location.isActive());
 
                 Log.d("Firebase Database", "Database Collected");
-                Log.d("Firebase database", String.valueOf(snapshot.getValue(Location.class)));
                 dataStatus.DataIsLoaded(location);
             }
 

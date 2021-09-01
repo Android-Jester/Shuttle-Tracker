@@ -9,8 +9,8 @@
         <entry key="app/src/main/res/drawable/ic_left_arrow.xml" value="4.0" />
         <entry key="app/src/main/res/drawable/ic_rectangle_3.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/left_arrow.xml" value="0.117" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.28222996515679444" />
-        <entry key="app/src/main/res/layout/activity_maps.xml" value="0.199438202247191" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.33430232558139533" />
+        <entry key="app/src/main/res/layout/activity_maps.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="app/src/main/res/layout/dialog_fragment.xml" value="0.37604166666666666" />

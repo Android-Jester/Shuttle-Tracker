@@ -1,17 +1,17 @@
 package com.printf.shuttle_tracker.Model.Map.data;
 
 public class Location {
-    private boolean isActve;
+    private boolean isActive;
     private double latitude;
     private double longitude;
 
 
 
     public Location() {}
-    public Location( boolean isActve, double latitude, double longitude) {
+    public Location( boolean isActive, double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.isActve = isActve;
+        this.isActive = isActive;
     }
 
     public double getLatitude() {
@@ -30,11 +30,11 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public boolean isActve() {
-        return isActve;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setActive(boolean actve) {
-        isActve = actve;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
