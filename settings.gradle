@@ -1,2 +1,3 @@
 rootProject.name = "Shuttle Tracker"
 include ':app'
+include ':locator'
